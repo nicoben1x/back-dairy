@@ -1,8 +1,19 @@
 <?php
 
-// Habilita CORS para permitirr solicitudes desde https://new.dairy.com.ar
-header("Access-Control-Allow-Origin: https://new.dairy.com.ar");
+// Habilita CORS para permitir solicitudes desde https://new.dairy.com.ar
+$allowedOrigins = [
+    "https://new.dairy.com.ar",
+    "http://localhost:3000"
+];
 
+$origin = $_SERVER['HTTP_ORIGIN'];
+
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+}
+
+
+// Resto de tu código aquí...
 
 require 'database.php'; // Reemplaza 'database.php' con el nombre de tu archivo de configuración de base de datos
 
@@ -13,17 +24,45 @@ function getProducts() {
         $query = "SELECT * FROM productNormal";
         $statement = $pdo->prepare($query);
         $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $products = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        // Convierte el resultado en formato JSON y lo envía como respuesta
-        header('Content-Type: application/json');
-        echo json_encode($result);
+        return $products;
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['message' => 'Something goes wrong (ProductNormal)']);
+        exit; // Termina la ejecución del script si hay un error
     }
 }
 
-// Llama a la función para obtener los productos
-getProducts();
+function getQuimicos() {
+    global $pdo; // $pdo debe ser la instancia de tu conexión PDO
+
+    try {
+        $query = "SELECT * FROM quimicoNormal";
+        $statement = $pdo->prepare($query);
+        $statement->execute();
+        $quimicos = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $quimicos;
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['message' => 'Something goes wrong (QuimicoNormal)']);
+        exit; // Termina la ejecución del script si hay un error
+    }
+}
+
+// Obtén los datos de productos y químicos por separado
+$productsData = getProducts();
+$quimicosData = getQuimicos();
+
+// Convierte los datos en formato JSON y los envía como respuesta
+$response = [
+    'products' => $productsData,
+    'quimicos' => $quimicosData
+];
+
+header('Content-Type: application/json');
+echo json_encode($response);
+
+
 ?>
