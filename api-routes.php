@@ -13,7 +13,7 @@ if (in_array($origin, $allowedOrigins)) {
 }
 
 
-// Resto de tu código aquí...
+// Resto de tu código aquí....
 
 require 'database.php'; // Reemplaza 'database.php' con el nombre de tu archivo de configuración de base de datos
 
