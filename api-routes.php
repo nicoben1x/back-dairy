@@ -1,6 +1,6 @@
 <?php
 
-// Habilita CORS para permitir solicitudes desde https://new.dairy.com.ar
+// Habilita CORS para permitirr solicitudes desde https://new.dairy.com.ar
 header("Access-Control-Allow-Origin: https://new.dairy.com.ar");
 
 
