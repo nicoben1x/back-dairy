@@ -1,6 +1,6 @@
 <?php
 
-// Habilita CORS para permitir solicitudes desde https://new.dairy.com.ar
+// Habilita CORS para permitir solicitudes desde https://new.dairy.com.ar y otras
 $allowedOrigins = [
     "https://new.dairy.com.ar",
     "http://localhost:3000"

@@ -3,7 +3,7 @@ require 'vendor/autoload.php'; // Asegúrate de incluir la biblioteca para leer 
 require 'database.php'; // Incluye el archivo con la configuración de la conexión a la base de datos
 
 // Función para insertar o actualizar datos en la base de datos
-function insertOrUpdateDatos($productId, $code, $description, $presentation, $dealerPrice, $retailPrice, $pdo) {
+function insertOrUpdateDatos($productId, $code, $description, $presentation, $dealerPrice, $retailPrice, $pdo, $rowNum) {
     try {
         // Verifica y ajusta los valores
         if ($code === "#N/A" || $code === "#REF!" || $code === "#VALUE!") {
@@ -11,10 +11,10 @@ function insertOrUpdateDatos($productId, $code, $description, $presentation, $de
         }
 
         // Verifica si dealerPrice es numérico, de lo contrario, establece 0
-$dealerPrice = is_numeric($dealerPrice) ? number_format($dealerPrice, 2, '.', '') : 0;
+        $dealerPrice = is_numeric($dealerPrice) ? number_format($dealerPrice, 2, '.', '') : 0;
 
-// Verifica si retailPrice es numérico, de lo contrario, establece 0
-$retailPrice = is_numeric($retailPrice) ? number_format($retailPrice, 2, '.', '') : 0;
+        // Verifica si retailPrice es numérico, de lo contrario, establece 0
+        $retailPrice = is_numeric($retailPrice) ? number_format($retailPrice, 2, '.', '') : 0;
 
         // Consulta si 'code' ya existe en la base de datos
         $stmt = $pdo->prepare('SELECT * FROM productNormal WHERE code = ?');
@@ -39,8 +39,13 @@ $retailPrice = is_numeric($retailPrice) ? number_format($retailPrice, 2, '.', ''
             echo "Retail Price: " . number_format($retailPrice, 2) . "\n";
         }
     } catch (PDOException $e) {
+        // Registra el error y la información de la celda no procesada
         echo "Error al insertar o actualizar datos en la base de datos: " . $e->getMessage() . "\n";
-        echo $code . "\n";
+        echo "Fila $rowNum - Código: \"$code\"\n";
+        echo "Descripción: \"$description\"\n";
+        echo "Presentación: \"$presentation\"\n";
+        echo "Dealer Price: \"$dealerPrice\"\n";
+        echo "Retail Price: \"$retailPrice\"\n";
     }
 }
 
@@ -64,7 +69,7 @@ try {
         }
 
         if (!empty($code)) {
-            insertOrUpdateDatos($productId, $code, $description, $presentation, $dealerPrice, $retailPrice, $pdo);
+            insertOrUpdateDatos($productId, $code, $description, $presentation, $dealerPrice, $retailPrice, $pdo, $rowNum);
         } else {
             echo "Fila con 'code' vacío ignorada\n";
             echo "Fila $rowNum - Código: \"$code\"\n";
