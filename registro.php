@@ -1,85 +1,80 @@
 <?php
-
 // Habilitar CORS (permitir solicitudes
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST"); // Puedes ajustar los métodos HTTP permitidos según tu necesidad
-header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Credentials: true"); // Si deseas permitir el envío de cookies
 header("Content-Type: application/json"); // Establece el tipo de contenido de la respuesta
-
 
 // Resto del código PHP aquí
 
 // Importar la configuración de la base de datos desde database.php
 require 'database.php';
 
-
-
-// Resto del código de registro// Resto del código de registro
+// Resto del código de registro
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    global $_POST;
+    // Obtén los datos JSON de la solicitud POST
+    $jsonData = file_get_contents("php://input");
 
-    
-    // Verifica si las variables POST están definidas
-    if (
-        isset($_POST['nombreCompleto'], $_POST['nuevoUsername'], $_POST['email'], $_POST['nuevaContraseña'], $_POST['repetirContraseña'])
-    ) {
-        $nombreCompleto = $_POST['nombreCompleto'];
-        $nuevoUsername = $_POST['nuevoUsername'];
-        $email = $_POST['email'];
-        $nuevaContraseña = password_hash($_POST['nuevaContraseña'], PASSWORD_DEFAULT); // Cifra la contraseña
-        $repetirContraseña = $_POST['repetirContraseña'];
-    
-        echo "Nombre Completo: " . $nombreCompleto . "<br>";
-        echo "Nuevo Username: " . $nuevoUsername . "<br>";
-        echo "Email: " . $email . "<br>";
-        echo "Nueva Contraseña: " . $nuevaContraseña . "<br>";
-        echo "Repetir Contraseña: " . $repetirContraseña . "<br>";
-    
+    // Decodifica los datos JSON en un objeto o un arreglo asociativo
+    $data = json_decode($jsonData, true); // El segundo parámetro true convierte en arreglo asociativo
 
-        // Verifica si las contraseñas coinciden
-        if ($nuevaContraseña !== password_hash($repetirContraseña, PASSWORD_DEFAULT)) {
-            echo "Las contraseñas no coinciden";
-            exit;
-        }
-
-        // Verifica si el nombre de usuario o el correo electrónico ya están registrados
-        $sql_check = "SELECT COUNT(*) as count FROM usuarios WHERE nuevoUsername = ? OR email = ?";
-        try {
-            $stmt_check = $pdo->prepare($sql_check);
-            $stmt_check->execute([$nuevoUsername, $email]);
-            $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
-            if ($result['count'] > 0) {
-                echo "El nombre de usuario o el correo electrónico ya están en uso";
-                exit;
-            }
-        } catch (PDOException $e) {
-            echo "Error al verificar la existencia de usuario o correo: " . $e->getMessage();
-            exit;
-        }
-
-        // Inserta los datos en la base de datos
-        $rol = "Normal"; // Valor predeterminado para el rol
-
-        $sql_insert = "INSERT INTO usuarios (nombreCompleto, nuevoUsername, email, contraseña, rol)
-               VALUES (?, ?, ?, ?, ?)";
-        try {
-            $stmt_insert = $pdo->prepare($sql_insert);
-            $stmt_insert->execute([$nombreCompleto, $nuevoUsername, $email, $nuevaContraseña, $rol]);
-            echo "Registro exitoso";
-        } catch (PDOException $e) {
-            echo "Error al registrar: " . $e->getMessage();
-        }
+    if ($data === null) {
+        // Error al decodificar el JSON
+        echo json_encode(["message" => "Error al decodificar el JSON"]);
     } else {
-        
-        echo "No se recibieron todos los datos del formulario";
-        echo $nombreCompleto;
-        echo $nuevoUsername;
-        echo $email;
-        echo $nuevaContraseña; 
-        echo $repetirContraseña;
+        // Verifica si los datos esperados están presentes en el arreglo
+        if (
+            isset($data['nombreCompleto'], $data['nuevoUsername'], $data['email'], $data['nuevaContraseña'], $data['repetirContraseña'])
+        ) {
+            $nombreCompleto = $data['nombreCompleto'];
+            $nuevoUsername = $data['nuevoUsername'];
+            $email = $data['email'];
+            $nuevaContraseñaPrevia = $data['repetirContraseña'];
+            $nuevaContraseña = password_hash($data['nuevaContraseña'], PASSWORD_DEFAULT); // Cifra la contraseña
+            $repetirContraseña = $data['repetirContraseña'];
+
+            // Verifica si las contraseñas coinciden
+            if ($nuevaContraseñaPrevia !== $repetirContraseña) {
+                echo json_encode(["message" => "Las contraseñas no coinciden"]);
+                echo $nombreCompleto;
+                echo $nuevoUsername;
+                echo $email;
+                echo $nuevaContraseña;
+                echo $repetirContraseña;
+            } else {
+                // Verifica si el nombre de usuario o el correo electrónico ya están registrados
+                $sql_check = "SELECT COUNT(*) as count FROM usuarios WHERE nuevoUsername = ? OR email = ?";
+                try {
+                    $stmt_check = $pdo->prepare($sql_check);
+                    $stmt_check->execute([$nuevoUsername, $email]);
+                    $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
+                    if ($result['count'] > 0) {
+                        echo json_encode(["message" => "El nombre de usuario o el correo electrónico ya están en uso"]);
+                    } else {
+                        // Inserta los datos en la base de datos
+                        $rol = "Normal"; // Valor predeterminado para el rol
+
+                        $sql_insert = "INSERT INTO usuarios (nombreCompleto, nuevoUsername, email, contraseña, rol)
+                               VALUES (?, ?, ?, ?, ?)";
+                        try {
+                            $stmt_insert = $pdo->prepare($sql_insert);
+                            $stmt_insert->execute([$nombreCompleto, $nuevoUsername, $email, $nuevaContraseña, $rol]);
+                            echo json_encode(["message" => "Registro exitoso"]);
+                        } catch (PDOException $e) {
+                            echo json_encode(["message" => "Error al registrar: " . $e->getMessage()]);
+                        }
+                    }
+                } catch (PDOException $e) {
+                    echo json_encode(["message" => "Error al verificar la existencia de usuario o correo: " . $e->getMessage()]);
+                }
+            }
+        } else {
+            echo json_encode(["message" => "No se recibieron todos los datos del formulario"]);
+        }
     }
-}else{
-    echo "No se detecto un request POST";
+} else {
+    echo json_encode(["message" => "No se detectó una solicitud POST"]);
 }
+
 ?>
