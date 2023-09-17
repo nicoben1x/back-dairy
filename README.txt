@@ -12,6 +12,6 @@ Algunos aparecen tanto en Base como en Quimicos, por ende se repite codigo.
     "nombre_completo": "Juan Ramirez",
     "username": "juanmar",
     "email": "juanmar@email.com",
-    "contraseña": "1234",
+    "nuevaContraseña": "1234",
     "repetirContraseña": "1234"
 }

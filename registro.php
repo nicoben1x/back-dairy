@@ -25,10 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Verifica si los datos esperados están presentes en el arreglo
         if (
-            isset($data['nombreCompleto'], $data['nuevoUsername'], $data['email'], $data['nuevaContraseña'], $data['repetirContraseña'])
+            isset($data['nombre_completo'], $data['username'], $data['email'], $data['nuevaContraseña'], $data['repetirContraseña'])
         ) {
-            $nombreCompleto = $data['nombreCompleto'];
-            $nuevoUsername = $data['nuevoUsername'];
+            $nombre_completo = $data['nombre_completo'];
+            $username = $data['username'];
             $email = $data['email'];
             $nuevaContraseñaPrevia = $data['repetirContraseña'];
             $nuevaContraseña = password_hash($data['nuevaContraseña'], PASSWORD_DEFAULT); // Cifra la contraseña
@@ -37,17 +37,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Verifica si las contraseñas coinciden
             if ($nuevaContraseñaPrevia !== $repetirContraseña) {
                 echo json_encode(["message" => "Las contraseñas no coinciden"]);
-                echo $nombreCompleto;
-                echo $nuevoUsername;
+                echo $nombre_completo;
+                echo $username;
                 echo $email;
                 echo $nuevaContraseña;
                 echo $repetirContraseña;
             } else {
                 // Verifica si el nombre de usuario o el correo electrónico ya están registrados
-                $sql_check = "SELECT COUNT(*) as count FROM usuarios WHERE nuevoUsername = ? OR email = ?";
+                $sql_check = "SELECT COUNT(*) as count FROM usuarios WHERE username = ? OR email = ?";
                 try {
                     $stmt_check = $pdo->prepare($sql_check);
-                    $stmt_check->execute([$nuevoUsername, $email]);
+                    $stmt_check->execute([$username, $email]);
                     $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
                     if ($result['count'] > 0) {
                         echo json_encode(["message" => "El nombre de usuario o el correo electrónico ya están en uso"]);
@@ -55,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Inserta los datos en la base de datos
                         $rol = "Normal"; // Valor predeterminado para el rol
 
-                        $sql_insert = "INSERT INTO usuarios (nombreCompleto, nuevoUsername, email, contraseña, rol)
+                        $sql_insert = "INSERT INTO usuarios (nombre_completo, username, email, contraseña, rol)
                                VALUES (?, ?, ?, ?, ?)";
                         try {
                             $stmt_insert = $pdo->prepare($sql_insert);
-                            $stmt_insert->execute([$nombreCompleto, $nuevoUsername, $email, $nuevaContraseña, $rol]);
+                            $stmt_insert->execute([$nombre_completo, $username, $email, $nuevaContraseña, $rol]);
                             echo json_encode(["message" => "Registro exitoso"]);
                         } catch (PDOException $e) {
                             echo json_encode(["message" => "Error al registrar: " . $e->getMessage()]);
