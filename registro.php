@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre_completo = $data['nombre_completo'];
             $username = $data['username'];
             $email = $data['email'];
-            $nuevaContraseñaPrevia = $data['repetirContraseña'];
+            $nuevaContraseñaPrevia = $data['nuevaContraseña'];
             $nuevaContraseña = password_hash($data['nuevaContraseña'], PASSWORD_DEFAULT); // Cifra la contraseña
             $repetirContraseña = $data['repetirContraseña'];
 
