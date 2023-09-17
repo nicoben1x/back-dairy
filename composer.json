@@ -1,0 +1,11 @@
+{
+    "name": "nico/htdocs",
+    "autoload": {
+        "psr-4": {
+            "Nico\\Htdocs\\": "src/"
+        }
+    },
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.29"
+    }
+}
