@@ -1,5 +1,5 @@
 <?php
-// Habilitar CORS (permitir solicitudes
+// Habilitar CORS (permitirr solicitudes
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST"); // Puedes ajustar los métodos HTTP permitidos según tu necesidad
 header("Access-Control-Allow-Headers: Content-Type");
