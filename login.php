@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $usernameOrEmail = $data['usernameOrEmail'];
             $password = $data['password'];
 
-            // Consulta la contraseña cifrada almacenada en la base de datos
-            $sql = "SELECT id, username, email, contraseña FROM usuarios WHERE username = ? OR email = ?";
+            // Consulta la contraseña cifrada y los datos del usuario almacenados en la base de datos
+            $sql = "SELECT id, nombre_completo, username, email, rol, contraseña FROM usuarios WHERE username = ? OR email = ?";
             try {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
