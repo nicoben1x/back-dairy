@@ -1,14 +1,14 @@
 <?php
-// Habilitaar CORS (permitir solicitudes
+// Habilitar CORS (permitir solicitudes
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST"); // Puedes ajustarr los métodos HTTP permitidos según tu necesidad
+header("Access-Control-Allow-Methods: POST"); // Puedes ajustar los métodos HTTP permitidos según tu necesidad
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Credentials: true"); // Si deseas permitir el envío de cookies
 header("Content-Type: application/json"); // Establece el tipo de contenido de la respuesta
 
 // Resto del código PHP aquí
 
-// Importar la configuración de la basee de datos desde database.php
+// Importar la configuración de la base de datos desde database.php
 require 'database.php';
 
 // Resto del código de registro
