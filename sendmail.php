@@ -27,7 +27,7 @@ $cliente = $requestData['cliente'];
 $pagos = $requestData['pagos'];
 
 // Destinatario fijo (administración)
-$destinatarioAdmin = 'administracion@dairy.com.ar';
+$destinatarioAdmin = 'testprogramacion2023@outlook.com';
 
 // Destinatario variable (cliente)
 $destinatarioCliente = $cliente; // Supongamos que el valor del campo cliente contiene la dirección de correo
@@ -65,6 +65,23 @@ try {
             'allow_self_signed' => true,
         ],
     ];
+
+    // Crear una tabla HTML para mostrar los datos del formulario
+$tableHtml = '<table>';
+foreach ($pagos as $pago) {
+    $tableHtml .= '<tr>';
+    $tableHtml .= '<td>Precio: ' . $pago['precio'] . '</td>';
+    $tableHtml .= '<td>Tipo de Pago: ' . $pago['tipoPago'] . '</td>';
+    // Puedes continuar agregando más datos aquí
+    $tableHtml .= '</tr>';
+}
+$tableHtml .= '</table>';
+
+// Configurar el cuerpo del correo
+$mail->Body = 'Datos del formulario:<br>' . $tableHtml;
+$mail->IsHTML(true); // Indicar que el correo contiene HTML
+
+// Resto de tu código...
 
     // Envía el correo
     $mail->send();
