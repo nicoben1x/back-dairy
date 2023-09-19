@@ -75,9 +75,21 @@ foreach ($pagos as $pago) {
     // Puedes continuar agregando más datos aquí
     $tableHtml .= '</tr>';
 }
+
+foreach ($pagos as $index => $pago) {
+    if (!empty($pago['imagen'])) {
+        $imagenData = base64_decode($pago['imagen']);
+        $imagenPath = './imagenesmail' . $index . '.jpg'; // Cambia la extensión según el tipo de imagen
+        file_put_contents($imagenPath, $imagenData); // Guardar la imagen en el servidor
+        $mail->addAttachment($imagenPath); // Adjuntar la imagen al correo
+    }
+}
+
+
+
 $tableHtml .= '</table>';
 
-// Configurar el cuerpo del correo
+// Configurarr el cuerpo del correo
 $mail->Body = 'Datos del formulario:<br>' . $tableHtml;
 $mail->IsHTML(true); // Indicar que el correo contiene HTML
 
