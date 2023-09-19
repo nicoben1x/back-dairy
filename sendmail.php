@@ -41,9 +41,9 @@ try {
     $mail->Host = 'mail.dairy.com.ar'; // Cambia esto al servidor SMTP adecuado
     $mail->SMTPAuth = true;
     $mail->Username = 'nico@dairy.com.ar';
-    $mail->Password = '123789nB!$%&';
+    $mail->Password = 'tomatE77!';
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Puedes cambiar esto según tus necesidades
-    $mail->Port = 465; // Puerto SMTP adecuado
+    $mail->Port = 587; // Puerto SMTP adecuado
 
     // Configurar los remitentes y destinatarios
     $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
@@ -53,6 +53,15 @@ try {
     // Asunto y cuerpo del correo
     $mail->Subject = 'Información de Pagos para ' . $cliente;
     $mail->Body = 'Datos del formulario: ' . json_encode($pagos);
+
+
+    $mail->SMTPOptions = [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true,
+        ],
+    ];
 
     // Envía el correo
     $mail->send();
