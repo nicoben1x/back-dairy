@@ -18,7 +18,7 @@ $inputData = file_get_contents("php://input");
 $requestData = json_decode($inputData, true);
 
 // Verificar si los datos se han recibido correctamente
-if (!$requestData || !isset($requestData['cliente']) || !isset($requestData['pagos'])) {
+if (empty($requestData)) {
     echo json_encode(["success" => false, "message" => "Datos del formulario incompletos"]);
     exit;
 }
