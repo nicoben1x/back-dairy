@@ -45,6 +45,9 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Puedes cambiar esto según tus necesidades
     $mail->Port = 587; // Puerto SMTP adecuado
 
+    // Configurar la codificación de caracteres a UTF-8
+    $mail->CharSet = 'UTF-8';
+
     // Configurar los remitentes y destinatarios
     $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
     $mail->addAddress($destinatarioAdmin);
