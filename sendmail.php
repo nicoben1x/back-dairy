@@ -99,7 +99,7 @@ $tableHtml .= '</table>';
 $mail->Body = 'Datos del formulario:<br>' . $tableHtml;
 $mail->IsHTML(true); // Indicar que el correo contiene HTML
 
-// Resto de tu código....
+// Resto de tu código...
 
     // Envía el correo
     $mail->send();
