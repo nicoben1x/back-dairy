@@ -78,10 +78,16 @@ foreach ($pagos as $pago) {
 
 foreach ($pagos as $index => $pago) {
     if (!empty($pago['imagen'])) {
-        $imagenData = base64_decode($pago['imagen']);
-        $imagenPath = './imagenesmail' . $index . '.jpg'; // Cambia la extensión según el tipo de imagen
+        // Eliminar la parte inicial "data:image/jpeg;base64,"
+        $imagenData = substr($pago['imagen'], strpos($pago['imagen'], ',') + 1);
+        
+        // Decodificar la imagen base64
+        $imagenData = base64_decode($imagenData);
+        
+        $imagenPath = './imagenesmail/' . $index . '.jpg'; // Cambia la extensión según el tipo de imagen
         file_put_contents($imagenPath, $imagenData); // Guardar la imagen en el servidor
         $mail->addAttachment($imagenPath); // Adjuntar la imagen al correo
+     
     }
 }
 
@@ -97,6 +103,11 @@ $mail->IsHTML(true); // Indicar que el correo contiene HTML
 
     // Envía el correo
     $mail->send();
+
+
+    
+
+
 
     // Respuesta de éxito
     echo json_encode(["success" => true, "message" => "Correo enviado con éxito backend"]);
