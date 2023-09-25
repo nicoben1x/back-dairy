@@ -27,6 +27,12 @@ $cliente = $requestData['cliente'];
 $nombreCliente = $requestData['nombreCliente'];
 $pagos = $requestData['pagos'];
 
+// Calcular el total de los pagos
+$totalPagos = 0;
+foreach ($pagos as $pago) {
+    $totalPagos += floatval($pago['precio']);
+}
+
 // Destinatario fijo (administración)
 $destinatarioAdmin = 'testprogramacion2023@outlook.com';
 
@@ -84,6 +90,18 @@ foreach ($pagos as $pago) {
     // Puedes continuar agregando más datos aquí
     $tableHtml .= '</tr>';
 }
+
+// Agregar una fila vacía como salto de línea antes del total de los pagos
+$tableHtml .= '<tr><td></td></tr>';
+
+// Agregar el total de los pagos al correo
+$tableHtml .= '<tr>';
+$tableHtml .= '<td>Total: $' . $totalPagos . '</td>';
+$tableHtml .= '</tr>';
+
+
+
+
 
 foreach ($pagos as $index => $pago) {
     if (!empty($pago['imagen'])) {
