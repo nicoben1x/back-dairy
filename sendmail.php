@@ -24,6 +24,7 @@ if (empty($requestData)) {
 }
 
 $cliente = $requestData['cliente'];
+$nombreCliente = $requestData['nombreCliente'];
 $pagos = $requestData['pagos'];
 
 // Destinatario fijo (administración)
@@ -69,7 +70,7 @@ try {
     // Crear una tabla HTML para mostrar los datos del formulario
     $tableHtml = '<table>';
     $tableHtml .= '<tr>';
-    $tableHtml .= '<td>Estimado '  . $cliente . '. Le informamos que hemos realizado el pago correspondiente a los servicios/productos proporcionados por su empresa. Agradecemos su dedicación y profesionalismo en nuestra relación comercial. Este es un mensaje automático.<br><br></td>';
+    $tableHtml .= '<td>Estimado '  . $nombreCliente . '. Le informamos que hemos realizado el pago correspondiente a los servicios/productos proporcionados por su empresa. Agradecemos su dedicación y profesionalismo en nuestra relación comercial. Este es un mensaje automático.<br><br></td>';
     $tableHtml .= '</tr>';
     $tableHtml .= '<tr>';
     $tableHtml .= '<td>Datos de pago:</td>';
