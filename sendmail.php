@@ -67,11 +67,19 @@ try {
     ];
 
     // Crear una tabla HTML para mostrar los datos del formulario
-$tableHtml = '<table>';
+    $tableHtml = '<table>';
+    $tableHtml .= '<tr>';
+    $tableHtml .= '<td>Estimado '  . $cliente . '. Le informamos que hemos realizado el pago correspondiente a los servicios/productos proporcionados por su empresa. Agradecemos su dedicación y profesionalismo en nuestra relación comercial. Este es un mensaje automático.<br><br></td>';
+    $tableHtml .= '</tr>';
+    $tableHtml .= '<tr>';
+    $tableHtml .= '<td>Datos de pago:</td>';
+    $tableHtml .= '</tr>';
+
 foreach ($pagos as $pago) {
     $tableHtml .= '<tr>';
-    $tableHtml .= '<td>Precio: ' . $pago['precio'] . '</td>';
-    $tableHtml .= '<td>Tipo de Pago: ' . $pago['tipoPago'] . '</td>';
+    $tableHtml .= '<td>Tipo de Pago: ' . $pago['tipoPago'] . '.</td>';
+    $tableHtml .= '<td>Valor: $' . $pago['precio'] . '</td>';
+    
     // Puedes continuar agregando más datos aquí
     $tableHtml .= '</tr>';
 }
@@ -96,7 +104,7 @@ foreach ($pagos as $index => $pago) {
 $tableHtml .= '</table>';
 
 // Configurarr el cuerpo del correo
-$mail->Body = 'Datos del formulario:<br>' . $tableHtml;
+$mail->Body = $tableHtml;
 $mail->IsHTML(true); // Indicar que el correo contiene HTML
 
 // Resto de tu código...
