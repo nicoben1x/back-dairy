@@ -1,11 +1,19 @@
 <?php
 
 // Habilitar CORS (permitir solicitudes)
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Credentials: true");
-header("Content-Type: application/json");
+
+
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Methods: HEAD, GET, POST, PUT, PATCH, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method,Access-Control-Request-Headers, Authorization");
+header('Content-Type: application/json');
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method == "OPTIONS") {
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method,Access-Control-Request-Headers, Authorization");
+header("HTTP/1.1 200 OK");
+die();
+}
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -34,7 +42,7 @@ foreach ($pagos as $pago) {
 }
 
 // Destinatario fijo (administración)
-$destinatarioAdmin = 'testprogramacion2023@outlook.com';
+$destinatarioAdmin = 'administracion@dairy.com.ar';
 
 // Destinatario variable (cliente)
 $destinatarioCliente = $cliente; // Supongamos que el valor del campo cliente contiene la dirección de correo
@@ -47,8 +55,8 @@ try {
     $mail->isSMTP();
     $mail->Host = 'mail.dairy.com.ar'; // Cambia esto al servidor SMTP adecuado
     $mail->SMTPAuth = true;
-    $mail->Username = 'nico@dairy.com.ar';
-    $mail->Password = 'tomatE77!';
+    $mail->Username = 'psiri@dairy.com.ar';
+    $mail->Password = '123789pS';
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Puedes cambiar esto según tus necesidades
     $mail->Port = 587; // Puerto SMTP adecuado
 
@@ -56,7 +64,7 @@ try {
     $mail->CharSet = 'UTF-8';
 
     // Configurar los remitentes y destinatarios
-    $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
+    $mail->setFrom('psiri@dairy.com.ar', 'Pablo Siri Dairy');
     $mail->addAddress($destinatarioAdmin);
     $mail->addAddress($destinatarioCliente);
 
@@ -76,7 +84,7 @@ try {
     // Crear una tabla HTML para mostrar los datos del formulario
     $tableHtml = '<table>';
     $tableHtml .= '<tr>';
-    $tableHtml .= '<td>Estimado '  . $nombreCliente . '. Le informamos que hemos realizado el pago correspondiente a los servicios/productos proporcionados por su empresa. Agradecemos su dedicación y profesionalismo en nuestra relación comercial. Este es un mensaje automático.<br><br></td>';
+    $tableHtml .= '<td>Estimado '  . $nombreCliente . '. Le informamos que hemos recibido el pago correspondiente para acreditar a su cuenta corriente. Agradecemos su dedicación y profesionalismo en nuestra relación comercial. Este es un mensaje automático.<br><br></td>';
     $tableHtml .= '</tr>';
     $tableHtml .= '<tr>';
     $tableHtml .= '<td>Datos de pago:</td>';
