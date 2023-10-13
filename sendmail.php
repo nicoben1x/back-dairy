@@ -42,7 +42,7 @@ foreach ($pagos as $pago) {
 }
 
 // Destinatario fijo (administración)
-$destinatarioAdmin = 'administracion@dairy.com.ar';
+$destinatarioAdmin = 'testprogramacion2023@outlook.com';
 
 // Destinatario variable (cliente)
 $destinatarioCliente = $cliente; // Supongamos que el valor del campo cliente contiene la dirección de correo
@@ -55,8 +55,8 @@ try {
     $mail->isSMTP();
     $mail->Host = 'mail.dairy.com.ar'; // Cambia esto al servidor SMTP adecuado
     $mail->SMTPAuth = true;
-    $mail->Username = 'psiri@dairy.com.ar';
-    $mail->Password = '123789pS';
+    $mail->Username = 'nico@dairy.com.ar';
+    $mail->Password = 'tomatE77!';
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Puedes cambiar esto según tus necesidades
     $mail->Port = 587; // Puerto SMTP adecuado
 
@@ -64,7 +64,7 @@ try {
     $mail->CharSet = 'UTF-8';
 
     // Configurar los remitentes y destinatarios
-    $mail->setFrom('psiri@dairy.com.ar', 'Pablo Siri Dairy');
+    $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
     $mail->addAddress($destinatarioAdmin);
     $mail->addAddress($destinatarioCliente);
 
