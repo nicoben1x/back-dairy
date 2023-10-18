@@ -2,7 +2,7 @@
 // Habilita CORS para permitir solicitudes desde https://new.dairy.com.ar y otras
 // La IP es de computadora hogar.
 $allowedOrigins = [
-    "https://new.dairy.com.ar",
+    "https://dairy.com.ar",
     "http://192.168.100.40:3000",
     "http://localhost:3000"
 ];

@@ -43,6 +43,7 @@ foreach ($pagos as $pago) {
 
 // Destinatario fijo (administración)
 $destinatarioAdmin = 'testprogramacion2023@outlook.com';
+$destinatarioAdmin2 = 'nuevonnncuenta@gmail.com';
 
 // Destinatario variable (cliente)
 $destinatarioCliente = $cliente; // Supongamos que el valor del campo cliente contiene la dirección de correo
@@ -66,6 +67,7 @@ try {
     // Configurar los remitentes y destinatarios
     $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
     $mail->addAddress($destinatarioAdmin);
+    $mail->addAddress($destinatarioAdmin2);
     $mail->addAddress($destinatarioCliente);
 
     // Asunto y cuerpo del correo
