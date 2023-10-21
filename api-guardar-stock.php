@@ -15,18 +15,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonData = file_get_contents("php://input");
 
     // Decodifica los datos JSON en un objeto o un arreglo asociativo
-    $data = json_decode($jsonData, true); // El segundo parámetro true convierte en arreglo asociativo
+    $data = json_decode($jsonData, true);
 
     if ($data === null) {
         // Error al decodificar el JSON
         echo json_encode(["message" => "Error al decodificar el JSON"]);
     } else {
+        // Obtén el valor de "fecha" del JSON
+        $fecha = $data['fecha'];
+
         // Conexión a la base de datos (utilizando la configuración de database.php)
         $conn = $pdo;
 
         if ($conn) {
             // Procesar los datos de quimicoStock
             if (isset($data['quimicoStock']) && is_array($data['quimicoStock'])) {
+                // Actualizar la columna "fecha" en el primer elemento de quimicoStock
+                if (!empty($fecha)) {
+                    $primerElemento = reset($data['quimicoStock']); // Obtiene el primer elemento
+                    $id = $primerElemento['id'];
+
+                    // Actualiza la columna "fecha" en la base de datos
+                    $sql = "UPDATE quimicoStock SET fecha = ? WHERE id = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute([$fecha, $id]);
+                }
+
+                // Continúa procesando los demás elementos de quimicoStock...
                 foreach ($data['quimicoStock'] as $quimico) {
                     $id = $quimico['id'];
 
@@ -71,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ]);
                     } else {
                         // El registro no existe, realiza una inserción
-                        $sql = "INSERT INTO quimicoStock (id, PRODUCTO, PROVEEDOR, cantidads, presentacions, cantidada, presentaciona, cantidadp, presentacionp, total, Ubicación, FORMATO) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $sql = "INSERT INTO quimicoStock (id, PRODUCTO, PROVEEDOR, cantidads, presentacions, cantidada, presentaciona, cantidadp, presentacionp, total, Ubicación, FORMATO, fecha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         // Luego, ejecuta la consulta con los valores correspondientes
                         $stmt = $conn->prepare($sql);
@@ -87,7 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $quimico['presentacionp'],
                             $quimico['total'],
                             $quimico['Ubicación'],
-                            $quimico['FORMATO']
+                            $quimico['FORMATO'],
+                            $quimico['fecha']
                         ]);
                     }
                 }
