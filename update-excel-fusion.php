@@ -130,7 +130,7 @@ try {
     echo "Error al procesar el archivo Excel: " . $e->getMessage() . "\n";
 }
 
-// Procesar el archivo Excel (segunda versión)
+// Procesar el archivo Excel (segunda versiónn)
 try {
     $inputFileName = './archivo.xlsm'; // Reemplaza con la ruta de tu archivo Excel
     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
