@@ -234,7 +234,7 @@ try {
         // Respuesta de éxito
        
     } catch (Exception $e) {
-        // Manejo de errores
+        // Manejo de erroress
        
     }
 
