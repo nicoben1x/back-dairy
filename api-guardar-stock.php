@@ -38,6 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Obtén el valor de "fecha" del JSON
         $fecha = $data['fecha'];
 
+        // Obtén el valor de "usuariostock" del JSON
+        $usuariostock = $data['usuariostock'];
+
         // Conexión a la base de datos (utilizando la configuración de database.php)
         $conn = $pdo;
 
@@ -213,11 +216,11 @@ try {
        $mail->CharSet = 'UTF-8';
 
     $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
-    $mail->addAddress('nicoben1x@gmail.com', 'Nicoben');
+    $mail->addAddress('nuevonnncuenta@gmail.com', 'Nicoben');
 
     
-    $mail->Subject = 'Actualización de la Base de Datos';
-    $mail->Body = 'La base de datos ha sido actualizada exitosamente.';
+    $mail->Subject = 'Actualización de Stock';
+    $mail->Body = 'Se ha sido actualizado el stock exitosamente. Actualizado por ' . json_encode($usuariostock) . '.';
 
     $mail->SMTPOptions = [
         'ssl' => [
