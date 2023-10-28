@@ -67,7 +67,7 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587; // Cambia esto al puerto SMTP adecuado
 
-       // Configurar la codificación de caracteres a UTF-8
+       // Configurar laa codificación de caracteres a UTF-8
        $mail->CharSet = 'UTF-8';
 
     $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
