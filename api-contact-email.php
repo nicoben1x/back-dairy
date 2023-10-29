@@ -77,11 +77,18 @@ try {
     $mail->send();
 
 
+    // Envío exitoso
+    $response = array('success' => true, 'message' => 'Correo enviado con éxito');
+    echo json_encode($response);
+
+
 
         // Respuesta de éxito
        
     } catch (Exception $e) {
         // Manejo de erroress
+        $response = array('success' => false, 'message' => 'Error al enviar el correo: ' . $mail->ErrorInfo);
+    echo json_encode($response);
        
     }
 
@@ -91,4 +98,8 @@ try {
 } else {
     echo json_encode(["message" => "No se detectó una solicitud POST"]);
 }
+
+
+
+
 ?>
