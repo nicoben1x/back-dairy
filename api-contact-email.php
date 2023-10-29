@@ -1,15 +1,29 @@
 <?php
-
-// Habilitar CORS (permitirr solicitudes
+// Habilitar CORS (permitir solicitudes desde cualquier origen)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST"); // Puedes ajustar los métodos HTTP permitidos según tu necesidad
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Credentials: true"); // Si deseas permitir el envío de cookies
 header("Content-Type: application/json"); // Establece el tipo de contenido de la respuesta
 
-// Resto del código PHP aquí
 
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php'; // Asegúrate de que la ruta sea la correcta para incluir PHPMailer
+
+
+
+
+
+
+
+// Importar la configuración de la base de datos desde database.php
+require 'database.php';
+
+// Verificar si se ha recibido una solicitud POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Obtén los datos JSON de la solicitud POST
     $jsonData = file_get_contents("php://input");
@@ -18,46 +32,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode($jsonData, true);
 
     if ($data === null) {
+        // Error al decodificar el JSON
         echo json_encode(["message" => "Error al decodificar el JSON"]);
     } else {
-        if (isset($data['nombre'], $data['telefono'], $data['email'], $data['consulta'])) {
-            $nombre = $data['nombre'];
-            $telefono = $data['telefono'];
-            $email = $data['email'];
-            $consulta = $data['consulta'];
-
-            $destinatario = 'nicoben1x@gmail.com';
-            $asunto = 'Nueva consulta de contacto';
-            $mensaje = "Nombre: $nombre\nTeléfono: $telefono\nEmail: $email\nConsulta: $consulta";
 
 
 
-            
+        $mail = new PHPMailer(true);
+try {
+    
+    
+    $mail->isSMTP();
+    $mail->Host = 'mail.dairy.com.ar'; // Cambia esto a tu servidor SMTP
+    $mail->SMTPAuth = true;
+    $mail->Username = 'nico@dairy.com.ar'; // Cambia esto a tu dirección de correo
+    $mail->Password = 'tomatE77!'; // Cambia esto a tu contraseña de correo
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587; // Cambia esto al puerto SMTP adecuado
+
+       // Configurar la codificación de caracteres a UTF-8
+       $mail->CharSet = 'UTF-8';
+
+    $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
+    $mail->addAddress('nuevonnncuenta@gmail.com', 'Nicoben');
+
+    $nombre = $data['nombre'];
+    $telefono = $data['telefono'];
+    $email = $data['email'];
+    $consulta = $data['consulta'];
+
+   
+    
+    $mail->Subject = 'Consulta Web Dairy';
+    $mail->Body = "Nombre: $nombre. \nTeléfono: $telefono.\nEmail: $email.\nConsulta: $consulta.";
+
+    $mail->SMTPOptions = [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true,
+        ],
+    ];
+    
+    $mail->send();
 
 
-            // Configura la información del servidor SMTP
-    ini_set('SMTP', 'mail.dairy.com.ar'); // Reemplaza 'tu_servidor_SMTP' por el servidor SMTP que debes usar
-    ini_set('smtp_port', '587'); // Reemplaza 'tu_puerto_SMTP' por el puerto SMTP correspondiente
 
-    // Envia el correo electrónico
+        // Respuesta de éxito
+       
+    } catch (Exception $e) {
+        // Manejo de erroress
+       
+    }
 
-            // Configura la dirección de retorno (Return-Path)
-            $headers = 'From: ' . $email . "\r\n" .
-                'Reply-To: ' . $email . "\r\n" .
-                'Return-Path: ' . $email . "\r\n" .
-                'X-Mailer: PHP/' . phpversion();
 
-            // Envia el correo electrónico con los encabezados
-            $enviado = mail($destinatario, $asunto, $mensaje, $headers);
 
-            if ($enviado) {
-                echo json_encode(['message' => 'Correo enviado con éxito']);
-            } else {
-                echo json_encode(['error' => 'Error al enviar el correo']);
-            }
-        } else {
-            echo json_encode(["message" => "No se recibieron todos los datos del formulario"]);
-        }
     }
 } else {
     echo json_encode(["message" => "No se detectó una solicitud POST"]);
