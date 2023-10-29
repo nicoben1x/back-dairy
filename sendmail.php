@@ -142,6 +142,24 @@ $mail->IsHTML(true); // Indicar que el correo contiene HTML
     $mail->send();
 
 
+
+
+    // Vaciar la carpeta de imágenes
+$directorioImagenes = './imagenesmail/';
+
+// Obtener una lista de archivos en el directorio
+$archivos = scandir($directorioImagenes);
+
+// Iterar a través de los archivos y eliminarlos
+foreach ($archivos as $archivo) {
+    if ($archivo !== '.' && $archivo !== '..') {
+        $archivoPath = $directorioImagenes . $archivo;
+        if (is_file($archivoPath)) {
+            unlink($archivoPath);
+        }
+    }
+}
+
     
 
 
