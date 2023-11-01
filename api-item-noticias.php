@@ -1,6 +1,5 @@
 <?php
 // Habilita CORS para permitir solicitudes desde https://new.dairy.com.ar y otras
-// La IP es de computadora hogar.
 $allowedOrigins = [
     "https://dairy.com.ar",
     "http://192.168.100.40:3000",
@@ -13,12 +12,10 @@ if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: $origin");
 }
 
-// Resto de tu código aquí....
-
-require 'database.php'; // Reemplaza 'database.php' con el nombre de tu archivo de configuración de base de datos
+require 'database.php';
 
 function getNoticiasItems() {
-    global $pdo; // $pdo debe ser la instancia de tu conexión PDO
+    global $pdo;
 
     try {
         $query = "SELECT * FROM noticiasItems";
@@ -30,14 +27,123 @@ function getNoticiasItems() {
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['message' => 'Something goes wrong (ItemLimpieza)']);
-        exit; // Termina la ejecución del script si hay un error
+        exit;
+    }
+}
+
+// Agregar noticia
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $titulo = $_POST['titulo'];
+    $contenido = $_POST['contenido'];
+    $fecha = $_POST['fecha'];
+    
+    // Verifica si se proporciona una nueva imagen
+    if (!empty($_FILES['imagen']['name'])) {
+        $imagen = $_FILES['imagen']['name'];
+        $targetDir = 'imagenesnoticias/'; // Ruta en el servidor
+        $targetFile = $targetDir . $imagen;
+        $fullImageUrl = 'https://normal.dairy.com.ar/' . $targetFile; // URL completa
+
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
+    } else {
+        $fullImageUrl = ''; // URL completa por defecto si no se proporciona una nueva imagen
+    }
+    
+    try {
+        $query = "INSERT INTO noticiasItems (titulo, contenido, fecha, imagen) VALUES (:titulo, :contenido, :fecha, :imagen)";
+        $statement = $pdo->prepare($query);
+        $statement->bindParam(':titulo', $titulo);
+        $statement->bindParam(':contenido', $contenido);
+        $statement->bindParam(':fecha', $fecha);
+        $statement->bindParam(':imagen', $fullImageUrl); // Almacena la URL completa
+        $statement->execute();
+        // Redirigir o mostrar un mensaje de éxito
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al agregar la noticia']);
+        exit;
+    }
+}
+
+// Editar noticia
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    parse_str(file_get_contents("php://input"), $putData);
+    $noticiaId = $putData['id'];
+    $titulo = $putData['titulo'];
+    $contenido = $putData['contenido'];
+    $fecha = $putData['fecha'];
+    
+    // Obtén la noticia actual para verificar si hay una imagen existente
+    $query = "SELECT imagen FROM noticiasItems WHERE id = :id";
+    $statement = $pdo->prepare($query);
+    $statement->bindParam(':id', $noticiaId);
+    $statement->execute();
+    $noticiaActual = $statement->fetch(PDO::FETCH_ASSOC);
+
+    // Verifica si se proporciona una nueva imagen
+    if (!empty($_FILES['imagen']['name'])) {
+        $imagen = $_FILES['imagen']['name'];
+        $targetDir = 'uploads/';
+        $targetFile = $targetDir . $imagen;
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
+        
+        // Si hay una imagen anterior, elimínala
+        if (!empty($noticiaActual['imagen'])) {
+            unlink($targetDir . $noticiaActual['imagen']);
+        }
+    } else {
+        $imagen = $noticiaActual['imagen']; // Conserva la imagen existente si no se proporciona una nueva
+    }
+    
+    try {
+        $query = "UPDATE noticiasItems SET titulo = :titulo, contenido = :contenido, fecha = :fecha, imagen = :imagen WHERE id = :id";
+        $statement = $pdo->prepare($query);
+        $statement->bindParam(':id', $noticiaId);
+        $statement->bindParam(':titulo', $titulo);
+        $statement->bindParam(':contenido', $contenido);
+        $statement->bindParam(':fecha', $fecha);
+        $statement->bindParam(':imagen', $imagen);
+        $statement->execute();
+        // Redirigir o mostrar un mensaje de éxito
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al editar la noticia']);
+        exit;
+    }
+}
+
+// Eliminar noticia
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $noticiaId = $_GET['id'];
+    
+    try {
+        // Obtén la imagen de la noticia para eliminarla
+        $query = "SELECT imagen FROM noticiasItems WHERE id = :id";
+        $statement = $pdo->prepare($query);
+        $statement->bindParam(':id', $noticiaId);
+        $statement->execute();
+        $noticia = $statement->fetch(PDO::FETCH_ASSOC);
+        
+        // Si hay una imagen asociada, elimínala
+        if (!empty($noticia['imagen'])) {
+            unlink('uploads/' . $noticia['imagen']);
+        }
+
+        $query = "DELETE FROM noticiasItems WHERE id = :id";
+        $statement = $pdo->prepare($query);
+        $statement->bindParam(':id', $noticiaId);
+        $statement->execute();
+        // Redirigir o mostrar un mensaje de éxito
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al eliminar la noticia']);
+        exit;
     }
 }
 
 // Obtén los datos de ItemLimpieza
 $noticiasItemsData = getNoticiasItems();
 
-// Convierte los datos en formato JSON y los envía como respuesta
 $response = [
     'noticiasItems' => $noticiasItemsData
 ];
