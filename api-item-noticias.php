@@ -141,6 +141,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     }
 }
 
+
+// Obtener noticia por ID
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+    $noticiaId = $_GET['id'];
+    
+    try {
+        $query = "SELECT * FROM noticiasItems WHERE id = :id";
+        $statement = $pdo->prepare($query);
+        $statement->bindParam(':id', $noticiaId);
+        $statement->execute();
+        $noticia = $statement->fetch(PDO::FETCH_ASSOC);
+        
+        if ($noticia) {
+            // Noticia encontrada, envía los datos de la noticia como respuesta
+         
+            $response2 = [
+                'noticia' => $noticia
+            ];
+            
+            header('Content-Type: application/json');
+            echo json_encode($response2);
+            echo exit;
+           
+        } else {
+            // Noticia no encontrada
+            http_response_code(404);
+            echo json_encode(['message' => 'Noticia no encontrada']);
+        }
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al obtener la noticia']);
+    }
+}
+
+
 // Obtén los datos de ItemLimpieza
 $noticiasItemsData = getNoticiasItems();
 
