@@ -36,19 +36,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = $_POST['titulo'];
     $contenido = $_POST['contenido'];
     $fecha = $_POST['fecha'];
-    
-    // Verifica si se proporciona una nueva imagen
+
     if (!empty($_FILES['imagen']['name'])) {
         $imagen = $_FILES['imagen']['name'];
         $targetDir = 'imagenesnoticias/'; // Ruta en el servidor
         $targetFile = $targetDir . $imagen;
-        $fullImageUrl = 'https://normal.dairy.com.ar/' . $targetFile; // URL completa
+
+        // Comprobar si el archivo ya existe
+        $counter = 1;
+        while (file_exists($targetFile)) {
+            // Generar un nuevo nombre de archivo único con un número incrementado
+            $filenameParts = pathinfo($imagen);
+            $newFilename = $filenameParts['filename'] . '_' . $counter . '.' . $filenameParts['extension'];
+            $targetFile = $targetDir . $newFilename;
+            $counter++;
+        }
+
+        // URL completa
+        $fullImageUrl = 'https://normal.dairy.com.ar/' . $targetFile;
 
         move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
     } else {
         $fullImageUrl = ''; // URL completa por defecto si no se proporciona una nueva imagen
     }
-    
+
     try {
         $query = "INSERT INTO noticiasItems (titulo, contenido, fecha, imagen) VALUES (:titulo, :contenido, :fecha, :imagen)";
         $statement = $pdo->prepare($query);
