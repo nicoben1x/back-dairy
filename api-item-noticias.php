@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     // Verifica si se proporciona una nueva imagen
     if (!empty($_FILES['imagen']['name'])) {
         $imagen = $_FILES['imagen']['name'];
-        $targetDir = 'uploads/';
+        $targetDir = 'imagenesnoticias/';
     
         $targetFile = $targetDir . $imagen;
         move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
@@ -139,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 // Eliminar noticia
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $noticiaId = $_GET['id'];
+    $noticiaImg = $_GET['imagen'];
     
     try {
         // Obtén la imagen de la noticia para eliminarla
@@ -150,7 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         
         // Si hay una imagen asociada, elimínala
         if (!empty($noticia['imagen'])) {
-            unlink('uploads/' . $noticia['imagen']);
+
+            $nombreArchivo = basename($noticia['imagen']);
+            unlink('imagenesnoticias/' . $nombreArchivo);
+        
         }
 
         $query = "DELETE FROM noticiasItems WHERE id = :id";
