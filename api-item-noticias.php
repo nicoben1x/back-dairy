@@ -91,11 +91,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Editar noticia
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
-
-    $titulo = $_POST['titulo'];
-    $contenido = $_POST['contenido'];
-    $fecha = $_POST['fecha'];
     
+    
+    if(isset($_POST['id']))
+$noticiaId = $_POST['id'];
+
+if(isset($_POST['titulo']))
+$titulo = $_POST['titulo'];
+
+if(isset($_POST['contenido']))
+$contenido = $_POST['contenido'];
+
+if(isset($_POST['fecha']))
+$fecha = $_POST['fecha'];
+
+
 
 
     // Obtén la noticia actual para verificar si hay una imagen existente
@@ -128,6 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     } else {
         $fullImageUrl = ''; // URL completa por defecto si no se proporciona una nueva imagen
     }
+
+    
     
     try {
         $query = "UPDATE noticiasItems SET titulo = :titulo, contenido = :contenido, fecha = :fecha, imagen = :imagen WHERE id = :id";
@@ -136,11 +148,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $statement->bindParam(':titulo', $titulo);
         $statement->bindParam(':contenido', $contenido);
         $statement->bindParam(':fecha', $fecha);
-        $statement->bindParam(':imagen', $imagen);
+        $statement->bindParam(':imagen', $fullImageUrl);
         $statement->execute();
         // Redirigir o mostrar un mensaje de éxito
         echo json_encode(['success' => true, 'message' => 'Noticia actualizada con éxito']);
-        var_dump($noticiaId);
+        var_dump($titulo);
 
     } catch (PDOException $e) {
         http_response_code(500);
