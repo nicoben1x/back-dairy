@@ -3,16 +3,28 @@
 $allowedOrigins = [
     "https://dairy.com.ar",
     "http://192.168.100.40:3000",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://new.dairy.com.ar" // Agrega el dominio correcto aquí
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'];
 
 if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+    header("Access-Control-Allow-Headers: Content-Type");
 }
 
 require 'database.php';
+
+// Manejar solicitudes OPTIONS
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+    header("Access-Control-Allow-Headers: Content-Type");
+    exit;
+}
+
 
 function getNoticiasItems() {
     global $pdo;
@@ -95,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     if (!empty($_FILES['imagen']['name'])) {
         $imagen = $_FILES['imagen']['name'];
         $targetDir = 'uploads/';
+    
         $targetFile = $targetDir . $imagen;
         move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
         
