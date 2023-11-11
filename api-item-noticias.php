@@ -90,12 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Editar noticia
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    parse_str(file_get_contents("php://input"), $putData);
-    $noticiaId = $putData['id'];
-    $titulo = $putData['titulo'];
-    $contenido = $putData['contenido'];
-    $fecha = $putData['fecha'];
+
+
+    $titulo = $_POST['titulo'];
+    $contenido = $_POST['contenido'];
+    $fecha = $_POST['fecha'];
     
+
+
     // Obtén la noticia actual para verificar si hay una imagen existente
     $query = "SELECT imagen FROM noticiasItems WHERE id = :id";
     $statement = $pdo->prepare($query);
@@ -106,17 +108,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     // Verifica si se proporciona una nueva imagen
     if (!empty($_FILES['imagen']['name'])) {
         $imagen = $_FILES['imagen']['name'];
-        $targetDir = 'imagenesnoticias/';
-    
+        $targetDir = 'imagenesnoticias/'; // Ruta en el servidor
         $targetFile = $targetDir . $imagen;
-        move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
-        
-        // Si hay una imagen anterior, elimínala
-        if (!empty($noticiaActual['imagen'])) {
-            unlink($targetDir . $noticiaActual['imagen']);
+
+        // Comprobar si el archivo ya existe
+        $counter = 1;
+        while (file_exists($targetFile)) {
+            // Generar un nuevo nombre de archivo único con un número incrementado
+            $filenameParts = pathinfo($imagen);
+            $newFilename = $filenameParts['filename'] . '_' . $counter . '.' . $filenameParts['extension'];
+            $targetFile = $targetDir . $newFilename;
+            $counter++;
         }
+
+        // URL completa
+        $fullImageUrl = 'https://normal.dairy.com.ar/' . $targetFile;
+
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
     } else {
-        $imagen = $noticiaActual['imagen']; // Conserva la imagen existente si no se proporciona una nueva
+        $fullImageUrl = ''; // URL completa por defecto si no se proporciona una nueva imagen
     }
     
     try {
@@ -129,6 +139,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $statement->bindParam(':imagen', $imagen);
         $statement->execute();
         // Redirigir o mostrar un mensaje de éxito
+        echo json_encode(['success' => true, 'message' => 'Noticia actualizada con éxito']);
+        var_dump($noticiaId);
+
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['message' => 'Error al editar la noticia']);
