@@ -90,9 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 // Editar noticia
-// ... Código anterior
-
-// Editar noticia
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
     // Recupera los datos de la solicitud PUT
@@ -115,14 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $fecha = $data['fecha'];
     }
 
-
-    
-
-
-
-
     // Verifica si se proporciona una nueva imagen
-    if (!empty($data['imagen'])) {
+    $imageUpdate = $data['imagen'] !== "null";
+
+    // Si se proporciona una nueva imagen, guarda la imagen en el servidor
+    if ($imageUpdate) {
         // La imagen se envía como base64
         $imagen = $data['imagen'];
         $targetDir = 'imagenesnoticias/'; // Ruta en el servidor
@@ -139,14 +133,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     }
 
     try {
-        $query = "UPDATE noticiasItems SET titulo = :titulo, contenido = :contenido, fecha = :fecha, imagen = :imagen WHERE id = :id";
+        // Build the SQL query based on whether a new image is provided
+        if ($imageUpdate) {
+            $query = "UPDATE noticiasItems SET titulo = :titulo, contenido = :contenido, fecha = :fecha, imagen = :imagen WHERE id = :id";
+        } else {
+            $query = "UPDATE noticiasItems SET titulo = :titulo, contenido = :contenido, fecha = :fecha WHERE id = :id";
+        }
+
         $statement = $pdo->prepare($query);
         $statement->bindParam(':id', $noticiaId);
         $statement->bindParam(':titulo', $titulo);
         $statement->bindParam(':contenido', $contenido);
         $statement->bindParam(':fecha', $fecha);
-        $statement->bindParam(':imagen', $fullImageUrl);
+
+        // Bind the image parameter only if a new image is provided
+        if ($imageUpdate) {
+            $statement->bindParam(':imagen', $fullImageUrl);
+        }
+
         $statement->execute();
+
         // Redirigir o mostrar un mensaje de éxito
         echo json_encode(['success' => true, 'message' => 'Noticia actualizada con éxito']);
         var_dump($titulo);
