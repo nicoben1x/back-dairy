@@ -88,59 +88,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+
+// Editar noticia
+// ... Código anterior
+
 // Editar noticia
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
+    // Recupera los datos de la solicitud PUT
+    $putData = file_get_contents("php://input");
+    $data = json_decode($putData, true);
+
+    if (isset($data['id'])) {
+        $noticiaId = $data['id'];
+    }
+
+    if (isset($data['titulo'])) {
+        $titulo = $data['titulo'];
+    }
+
+    if (isset($data['contenido'])) {
+        $contenido = $data['contenido'];
+    }
+
+    if (isset($data['fecha'])) {
+        $fecha = $data['fecha'];
+    }
+
+
     
-    
-    if(isset($_POST['id']))
-$noticiaId = $_POST['id'];
-
-if(isset($_POST['titulo']))
-$titulo = $_POST['titulo'];
-
-if(isset($_POST['contenido']))
-$contenido = $_POST['contenido'];
-
-if(isset($_POST['fecha']))
-$fecha = $_POST['fecha'];
 
 
 
-
-    // Obtén la noticia actual para verificar si hay una imagen existente
-    $query = "SELECT imagen FROM noticiasItems WHERE id = :id";
-    $statement = $pdo->prepare($query);
-    $statement->bindParam(':id', $noticiaId);
-    $statement->execute();
-    $noticiaActual = $statement->fetch(PDO::FETCH_ASSOC);
 
     // Verifica si se proporciona una nueva imagen
-    if (!empty($_FILES['imagen']['name'])) {
-        $imagen = $_FILES['imagen']['name'];
+    if (!empty($data['imagen'])) {
+        // La imagen se envía como base64
+        $imagen = $data['imagen'];
         $targetDir = 'imagenesnoticias/'; // Ruta en el servidor
-        $targetFile = $targetDir . $imagen;
+        $targetFile = $targetDir . uniqid() . '.png'; // O ajusta la extensión según tu necesidad
 
-        // Comprobar si el archivo ya existe
-        $counter = 1;
-        while (file_exists($targetFile)) {
-            // Generar un nuevo nombre de archivo único con un número incrementado
-            $filenameParts = pathinfo($imagen);
-            $newFilename = $filenameParts['filename'] . '_' . $counter . '.' . $filenameParts['extension'];
-            $targetFile = $targetDir . $newFilename;
-            $counter++;
-        }
+        // Decodifica la imagen y la guarda en el servidor
+        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagen));
+        file_put_contents($targetFile, $imageData);
 
         // URL completa
         $fullImageUrl = 'https://normal.dairy.com.ar/' . $targetFile;
-
-        move_uploaded_file($_FILES['imagen']['tmp_name'], $targetFile);
     } else {
         $fullImageUrl = ''; // URL completa por defecto si no se proporciona una nueva imagen
     }
 
-    
-    
     try {
         $query = "UPDATE noticiasItems SET titulo = :titulo, contenido = :contenido, fecha = :fecha, imagen = :imagen WHERE id = :id";
         $statement = $pdo->prepare($query);
@@ -153,13 +150,15 @@ $fecha = $_POST['fecha'];
         // Redirigir o mostrar un mensaje de éxito
         echo json_encode(['success' => true, 'message' => 'Noticia actualizada con éxito']);
         var_dump($titulo);
-
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['message' => 'Error al editar la noticia']);
         exit;
     }
 }
+
+
+
 
 // Eliminar noticia
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
