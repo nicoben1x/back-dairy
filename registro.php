@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($result['count'] > 0) {
                         echo json_encode(["message" => "El nombre de usuario o el correo electrónico ya están en uso"]);
                     } else {
-                        // Inserta los datos en la base de datos
+                        // Inserta los datos en la base de datoss
                         $rol = "Cliente"; // Valor predeterminado para el rol
 
                         $sql_insert = "INSERT INTO usuarios (nombre_completo, username, email, contraseña, rol)
