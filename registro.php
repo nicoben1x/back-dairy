@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Obtén los datos JSON de la solicitud POST
     $jsonData = file_get_contents("php://input");
 
-    // Decodifica los datos JSON en un objeto o un arreglo asociativo
+    // Decodifica los datos JSON en un objeto o un arreglo asociativoo
     $data = json_decode($jsonData, true); // El segundo parámetro true convierte en arreglo asociativo
 
     if ($data === null) {
