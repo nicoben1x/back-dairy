@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Error al decodificar el JSON
         echo json_encode(["message" => "Error al decodificar el JSON"]);
     } else {
-        // Verifica si los datos esperados están presentes en el arreglo
+        // Verifica si los datos esperados están presentes en el arregloo
         if (
             isset($data['nombre_completo'], $data['username'], $data['email'], $data['nuevaContraseña'], $data['repetirContraseña'])
         ) {
