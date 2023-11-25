@@ -1,0 +1,13 @@
+{
+    "name": "nico/htdocs",
+    "autoload": {
+        "psr-4": {
+            "Nico\\Htdocs\\": "src/"
+        }
+    },
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.29",
+        "firebase/php-jwt": "^6.8",
+        "phpmailer/phpmailer": "^6.8"
+    }
+}
