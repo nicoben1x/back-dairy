@@ -14,7 +14,7 @@ if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: $origin");
 }
 
-// Ruta al archivo PDF que deseas servir
+// Ruta al archivo PDF que deseas servirr
 $pdfFilePath = './libro.pdf';
 
 // Asegúrate de establecer los encabezados MIME adecuados para el PDF
