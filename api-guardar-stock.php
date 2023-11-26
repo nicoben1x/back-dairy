@@ -226,7 +226,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
        
 
-        $mail->Body = 'Se ha actualizado el stock exitosamente. Actualizado por ' . $data['usuariomod2'] . ".\n";
+
+       //  $mail->Body = 'Se ha actualizado el stock exitosamente. Actualizado por ' . $data['usuariomod2'] . ".\n";
+
+
+
+
+       $mail->Body = 'Se ha actualizado el stock exitosamente.';
+
 
         // Agregar la información de los pedidos de productos químicos
         if (isset($data['productosQuimicos']) && is_array($data['productosQuimicos'])) {
@@ -239,6 +246,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->Body .= "Total: " . $productoQuimico['total'] . " Kg\n";
                 $mail->Body .= "Ubicación: " . $productoQuimico['ubicacion'] . "\n"; // 'ubicacion' en lugar de 'Ubicación'
                 $mail->Body .= "Formato: " . $productoQuimico['formato'] . "\n"; // 'formato' en lugar de 'FORMATO'
+        
+                $mail->Body .= "Actualizado por: " . $productoQuimico['usuariomod'] . ".\n"; 
+
                 // Si la fecha está disponible en los datos, puedes agregarla también
                 // $mail->Body .= "Fecha: " . $productoQuimico['fecha'] . "\n";
                 $mail->Body .= "\n";
@@ -253,6 +263,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->Body .= "Cantidad: " . $productoBidon['cantidadPedido'] . "\n";
                 $mail->Body .= "Presentación Kg: " . $productoBidon['presentacionKgPedido'] . "\n";
                 $mail->Body .= "Total: " . $productoBidon['total'] . "\n";
+                $mail->Body .= "Actualizado por: " . $productoQuimico['usuariomod'] . ".\n"; 
+
        
                 $mail->Body .= "\n";
             }
