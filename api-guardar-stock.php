@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
        $mail->Body = 'Se ha actualizado el stock exitosamente.';
 
 
-        // Agregar la información de los pedidos de productos químicos
+        // Agregar la información de los pedidos de productos químicoss
         if (isset($data['productosQuimicos']) && is_array($data['productosQuimicos'])) {
             $mail->Body .= "\n\nProductos a Comprar:\n\n";
             foreach ($data['productosQuimicos'] as $productoQuimico) {
