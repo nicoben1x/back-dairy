@@ -41,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Obtén el valor de "usuariostock" del JSON
         $usuariostock = $data['usuariostock'];
 
+
+
         // Conexión a la base de datos (utilizando la configuración de database.php)
         $conn = $pdo;
 
@@ -198,57 +200,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // ... Tu código para actualizar la base de datos ...
 
-// Envía un correo electrónico después de actualizar la base de datos
-
-$mail = new PHPMailer(true);
-try {
-    
-    
-    $mail->isSMTP();
-    $mail->Host = 'mail.dairy.com.ar'; // Cambia esto a tu servidor SMTP
-    $mail->SMTPAuth = true;
-    $mail->Username = 'nico@dairy.com.ar'; // Cambia esto a tu dirección de correo
-    $mail->Password = 'tomatE77!'; // Cambia esto a tu contraseña de correo
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587; // Cambia esto al puerto SMTP adecuado
-
-       // Configurar la codificación de caracteres a UTF-8
-       $mail->CharSet = 'UTF-8';
-
-    $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
-    $mail->addAddress('nuevonnncuenta@gmail.com', 'Nicoben');
-
-    
-    $mail->Subject = 'Actualización de Stock';
-    $mail->Body = 'Se ha sido actualizado el stock exitosamente. Actualizado por ' . json_encode($usuariostock) . '.';
-
-    $mail->SMTPOptions = [
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true,
-        ],
-    ];
-    
-    $mail->send();
+// Envía un correo electrónico después de actualizar la base de 
 
 
+
+
+    $mail = new PHPMailer(true);
+    try {
+        // Configurar la conexión SMTP
+        $mail->isSMTP();
+        $mail->Host = 'mail.dairy.com.ar'; // Cambia esto a tu servidor SMTP
+        $mail->SMTPAuth = true;
+        $mail->Username = 'nico@dairy.com.ar'; // Cambia esto a tu dirección de correo
+        $mail->Password = 'tomatE77!'; // Cambia esto a tu contraseña de correo
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587; // Cambia esto al puerto SMTP adecuado
+
+        // Configurar la codificación de caracteres a UTF-8
+        $mail->CharSet = 'UTF-8';
+
+        // Detalles del correo electrónico
+        $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
+        $mail->addAddress('nicoben1x@gmail.com', 'Nicoben');
+        $mail->Subject = 'Actualización de Stock';
+
+       
+
+        $mail->Body = 'Se ha actualizado el stock exitosamente. Actualizado por ' . $data['usuariomod2'] . ".\n";
+
+        // Agregar la información de los pedidos de productos químicos
+        if (isset($data['productosQuimicos']) && is_array($data['productosQuimicos'])) {
+            $mail->Body .= "\n\nProductos a Comprar:\n\n";
+            foreach ($data['productosQuimicos'] as $productoQuimico) {
+                $mail->Body .= "Producto: " . $productoQuimico['nombre'] . "\n"; // 'nombre' en lugar de 'PRODUCTO'
+                $mail->Body .= "Proveedor: " . $productoQuimico['proveedor'] . "\n"; // 'proveedor' en lugar de 'PROVEEDOR'
+                $mail->Body .= "Cantidad: " . $productoQuimico['cantidadPedido'] . "\n";
+                $mail->Body .= "Presentación Kg : " . $productoQuimico['presentacionKgPedido'] . "\n";
+                $mail->Body .= "Total: " . $productoQuimico['total'] . " Kg\n";
+                $mail->Body .= "Ubicación: " . $productoQuimico['ubicacion'] . "\n"; // 'ubicacion' en lugar de 'Ubicación'
+                $mail->Body .= "Formato: " . $productoQuimico['formato'] . "\n"; // 'formato' en lugar de 'FORMATO'
+                // Si la fecha está disponible en los datos, puedes agregarla también
+                // $mail->Body .= "Fecha: " . $productoQuimico['fecha'] . "\n";
+                $mail->Body .= "\n";
+            }
+        }
+        
+        // Agregar la información de los pedidos de bidones
+        if (isset($data['productosBidones']) && is_array($data['productosBidones'])) {
+           
+            foreach ($data['productosBidones'] as $productoBidon) {
+                $mail->Body .= "Producto: " . $productoBidon['nombre'] . "\n"; // 'nombre' en lugar de 'producto'
+                $mail->Body .= "Cantidad: " . $productoBidon['cantidadPedido'] . "\n";
+                $mail->Body .= "Presentación Kg: " . $productoBidon['presentacionKgPedido'] . "\n";
+                $mail->Body .= "Total: " . $productoBidon['total'] . "\n";
+       
+                $mail->Body .= "\n";
+            }
+        }
+
+        // Configuración adicional para el envío del correo
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+            ],
+        ];
+
+        // Envío del correo electrónico
+        $mail->send();
 
         // Respuesta de éxito
-       
+        // Aquí puedes retornar algo o ejecutar acciones adicionales si el envío es exitoso
+
     } catch (Exception $e) {
-        // Manejo de erroress
-       
+        // Manejo de errores
+        // Aquí puedes manejar los errores generados durante el envío del correo electrónico
     }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -264,3 +292,14 @@ try {
     echo json_encode($response);
 }
 ?>
+
+
+
+
+
+
+
+
+
+
+
