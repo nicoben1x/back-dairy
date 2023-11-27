@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         echo json_encode(["message" => "El nombre de usuario o el correo electrónico ya están en uso"]);
                     } else {
                         // Inserta los datos en la base de datoss
-                        $rol = "Cliente"; // Valor predeterminado para el rol
+                        $rol = "PreCliente"; // Valor predeterminado para el rol
 
                         $sql_insert = "INSERT INTO usuarios (nombre_completo, username, email, contraseña, rol)
                                VALUES (?, ?, ?, ?, ?)";
@@ -78,6 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587; // Cambia esto al puerto SMTP adecuado
 
+                // Obtener el ID del usuario recién insertado
+                $lastUserId = $pdo->lastInsertId();
+
                 // Configurar la codificación de caracteres a UTF-8
                 $mail->CharSet = 'UTF-8';
 
@@ -85,7 +88,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->addAddress('nicoben1x@gmail.com', 'Nicoben');
 
                 $mail->Subject = 'Registro de Usuario';
-                $body = 'Se ha registrado un nuevo usuario.';
+                $mail->isHTML(true);
+
+                
+
+                // Obtener los datos del usuario que intenta registrarse
+                $usuarioNuevo = "Nombre completo: $nombre_completo.<br>";
+                $usuarioNuevo .= "Nombre de usuario: $username.<br>";
+                $usuarioNuevo .= "Email: $email.<br>";
+
+                $body = "<p>Se ha registrado un nuevo usuario:</p>";
+                $body .= "<p>$usuarioNuevo</p>";
+                $body .= "<p>Haz click para habilitarlo:</p>";
+                $body .= "<p><a href='https://normal.dairy.com.ar//cambiar-rol.php?user_id=$lastUserId&action=cambiar_rol'>Habilitar usuario</a></p>";
+    
 
                
                 $mail->Body = $body;
