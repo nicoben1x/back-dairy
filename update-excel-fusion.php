@@ -108,6 +108,12 @@ function insertOrUpdateDatos2($productId, $code, $description, $presentation, $d
     }
 }
 
+echo "INICIANDO PROCESO, POR FAVOR NO CIERRE ESTA PESTAÑA.";
+echo "INICIANDO PROCESO, POR FAVOR NO CIERRE ESTA PESTAÑA.";
+echo "INICIANDO PROCESO, POR FAVOR NO CIERRE ESTA PESTAÑA.";
+echo "INICIANDO PROCESO, POR FAVOR NO CIERRE ESTA PESTAÑA.";
+
+
 // Procesar el archivo Excel (primera versión)
 try {
     $inputFileName = './archivo.xlsm'; // Reemplaza con la ruta de tu archivo Excel
@@ -162,4 +168,13 @@ try {
 } catch (Exception $e) {
     echo "Error al procesar el archivo Excel: " . $e->getMessage() . "\n";
 }
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
+echo "PROCESO FINALIZADO, YA PUEDE CERRAR ESTA PESTAÑA.";
 ?>
