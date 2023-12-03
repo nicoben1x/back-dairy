@@ -6,8 +6,9 @@ header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
 function uploadAndReplaceFile($file) {
-    $targetDir = "/"; // Directorio donde se almacenará el archivo (en la raíz del servidor)
-    $targetFile = $targetDir . basename($file["name"]);
+    $targetDir = __DIR__ . "/"; // Directorio donde se ejecuta el script
+    $targetFileName = "archivo.xlsm"; // Nombre fijo del archivo
+    $targetFile = $targetDir . $targetFileName;
     $uploadOk = 1;
     $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
@@ -31,7 +32,7 @@ function uploadAndReplaceFile($file) {
     } else {
         // Intentar subir el archivo
         if (move_uploaded_file($file["tmp_name"], $targetFile)) {
-            echo json_encode(array("message" => "El archivo " . basename($file["name"]) . " ha sido subido y reemplazado en la ubicación general."));
+            echo json_encode(array("message" => "El archivo se ha subido y reemplazado con el nombre 'archivo.xlsm'."));
         } else {
             echo json_encode(array("message" => "Hubo un error al subir el archivo."));
         }
@@ -44,3 +45,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
     echo json_encode(array("message" => "No se recibió ningún archivo."));
 }
 ?>
+
