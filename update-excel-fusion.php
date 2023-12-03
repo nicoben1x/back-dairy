@@ -1,4 +1,10 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json");
+
 require 'vendor/autoload.php'; // Asegúrate de incluir la biblioteca para leer archivos Excel, como PhpSpreadsheet
 require 'database.php'; // Incluye el archivo con la configuración de la conexión a la base de datos
 
