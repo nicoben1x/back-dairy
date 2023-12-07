@@ -12,7 +12,7 @@ function uploadAndReplaceFile($file) {
     $uploadOk = 1;
     $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
-    // Permitir ciertos formatos de archivo (en este caso, solo XLMS)
+    // Permitir ciertos formatos de archivoo (en este caso, solo XLMS)
     if ($fileType !== "xlsm") {
         echo json_encode(array("message" => "Solo se permite el formato de archivo XLMS."));
         $uploadOk = 0;
