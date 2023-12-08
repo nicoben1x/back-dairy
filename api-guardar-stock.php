@@ -222,6 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Detalles del correo electrónico
         $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
         $mail->addAddress('nicoben1x@gmail.com', 'Nicoben');
+        $mail->addAddress('testprogramacion2023@outlook.com', 'Destinatario 2');
         $mail->Subject = 'Actualización de Stock';
 
        
