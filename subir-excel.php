@@ -18,7 +18,7 @@ function uploadAndReplaceFile($file) {
         $uploadOk = 0;
     }
 
-    // Si el archivo ya existe, intenta reemplazarloo
+    // Si el archivo ya existe, intenta reemplazarlo
     if (file_exists($targetFile)) {
         if (!unlink($targetFile)) {
             echo json_encode(array("message" => "Hubo un error al reemplazar el archivo existente."));
