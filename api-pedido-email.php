@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $body = 'Se ha realizado el siguiente pedido por ' . $usuariopedido . ".\n\n";
 
                 foreach ($selectedItems as $item) {
+                    $body .= "Código: " . $item['codigo'] . ".\n";
                     $body .= "Producto: " . $item['producto'] . ".\n";
                     $body .= "Precio Unitario: $" . $item['precio'] . ".\n";
                     $body .= "Cantidad: " . $item['cantidad'] . ".\n";
