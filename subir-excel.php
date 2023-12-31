@@ -5,7 +5,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
-$response = array(); // Array para almacenar la respuesta
+$response = array(); // Array para almacenar la respuestaa
 
 if ($_FILES['file']['error'] === UPLOAD_ERR_OK) {
     $nombre_archivo = 'archivo';
