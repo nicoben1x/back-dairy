@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Obtén el valor de "selectedItems" y "usuariopedido" del JSON
         $selectedItems = $data['selectedItems'];
         $usuariopedido = $data['usuariopedido'];
+         // Obtén la dirección de correo del cliente
+        $clienteEmail = $data['clienteEmail'];
 
         // Conexión a la base de datos (utilizando la configuración de database.php)
         $conn = $pdo;
@@ -55,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $mail->setFrom('nico@dairy.com.ar', 'Nico Dairy');
                 $mail->addAddress('nicoben1x@gmail.com', 'Nicoben');
+                $mail->addAddress($clienteEmail, 'Cliente');
 
                 $mail->Subject = 'Pedido Dairy Web';
                 $body = 'Se ha realizado el siguiente pedido por ' . $usuariopedido . ".\n\n";
